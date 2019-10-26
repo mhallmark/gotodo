@@ -1,13 +1,20 @@
 package main
 
 import (
-	"github.com/mhallmark/gotodo/data"
+	"fmt"
+
 	"github.com/mhallmark/gotodo/cmd"
+	"github.com/mhallmark/gotodo/data"
 )
 
 func main() {
-	data.Open()
+	err := data.Open()
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	defer data.Close()
-	
 	cmd.Execute()
 }

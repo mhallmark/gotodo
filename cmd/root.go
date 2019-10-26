@@ -6,9 +6,10 @@ import (
 
 var (
 	rootCmd = &cobra.Command{
-		Use:   "todo",
-		Short: "A todo list cli.",
-		Long: `A todo list cli.`,
+		Use:              "todo",
+		Short:            "A todo list cli.",
+		Long:             `A todo list cli.`,
+		TraverseChildren: true,
 	}
 )
 
@@ -21,4 +22,5 @@ func init() {
 	rootCmd.AddCommand(addCommand)
 	rootCmd.AddCommand(listCommand)
 	rootCmd.AddCommand(removeCommand)
+	rootCmd.AddCommand(doneCommand)
 }

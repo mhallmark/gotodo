@@ -1,26 +1,43 @@
 package cmd
 
-import(
+import (
+	"time"
+
 	"github.com/mhallmark/gotodo/data"
 	"github.com/spf13/cobra"
 )
 
-var listCommand = &cobra.Command{
-	Use: "list",
-	Short: "Lists todo items.",
-	Long: "Lists todo items. Default filter is unfinished. Use -a to list all items.",
-	Run: list,
+var (
+	allItems    bool
+	listCommand = &cobra.Command{
+		Use:     "list",
+		Short:   "Lists todo items.",
+		Long:    "Lists todo items. Default filter is unfinished. Use -a to list all items.",
+		Example: "gotodo list",
+		Run:     list,
+	}
+)
+
+func init() {
+	listCommand.Flags().BoolVarP(&allItems, "all", "a", false, "gotodo list --all true")
 }
 
 func list(cmd *cobra.Command, args []string) {
-	items, err := data.List()
+	items, errs, done := data.List(allItems)
 
-	if (err != nil) {
-		cmd.PrintErr(err)
-		return
-	}
-
-	for item := range items {
-		cmd.Println(item)
+	for {
+		select {
+		case <-done:
+			return
+		case item := <-items:
+			if allItems {
+				cmd.Printf("%v \"%v\" DONE:%v\n", item.ID.String()[0:8], item.Message, item.Done)
+			} else {
+				cmd.Printf("%v \"%v\" %v\n", item.ID.String()[0:8], item.Message, item.Created.Format(time.UnixDate))
+			}
+		case err := <-errs:
+			cmd.PrintErrln(err)
+			return
+		}
 	}
 }
