@@ -28,6 +28,7 @@ func Open() error {
 
 // Close closes the connection to the local database.
 func Close() {
+	db.Merge()
 	db.Close()
 }
 
