@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/mhallmark/gotodo/data"
+	"github.com/mhallmark/gotodo/data/todoitems"
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +13,7 @@ var removeCommand = &cobra.Command{
 }
 
 func remove(cmd *cobra.Command, args []string) {
-	keys, errs, done := data.Remove(args)
+	keys, errs, done := todoitems.Remove(args)
 
 	for {
 		select {

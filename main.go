@@ -4,17 +4,17 @@ import (
 	"fmt"
 
 	"github.com/mhallmark/gotodo/cmd"
-	"github.com/mhallmark/gotodo/data"
+	"github.com/mhallmark/gotodo/data/todoitems"
 )
 
 func main() {
-	err := data.Open()
+	err := todoitems.Open()
 
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	defer data.Close()
+	defer todoitems.Close()
 	cmd.Execute()
 }

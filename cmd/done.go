@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"github.com/mhallmark/gotodo/data"
+	"github.com/mhallmark/gotodo/data/todoitems"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +15,7 @@ var doneCommand = &cobra.Command{
 }
 
 func done(cmd *cobra.Command, args []string) {
-	changedItems, errs, done := data.Done(args)
+	changedItems, errs, done := todoitems.Done(args)
 
 	for {
 		select {

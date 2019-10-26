@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/mhallmark/gotodo/data"
+	"github.com/mhallmark/gotodo/data/todoitems"
 	"github.com/spf13/cobra"
 )
 
@@ -31,14 +31,14 @@ func add(cmd *cobra.Command, args []string) {
 			return
 		}
 
-		todo := data.TodoItem{
+		todo := todoitems.TodoItem{
 			ID:      id,
 			Message: v,
 			Created: time.Now(),
 			Done:    false,
 		}
 
-		aErr := data.Add(todo)
+		aErr := todoitems.Add(todo)
 
 		if aErr != nil {
 			cmd.PrintErr("Oops, something done goofed.")
