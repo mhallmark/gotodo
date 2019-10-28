@@ -28,7 +28,7 @@ func done(cmd *cobra.Command, args []string) {
 			cmd.PrintErrln(err)
 			os.ErrClosed = err
 		case item := <-changedItems:
-			cmd.Printf("Updated %v to DONE\n", item.ID.String()[0:8])
+			cmd.Printf("Updated %v to DONE\n", item.ID[0:8])
 		}
 	}
 }

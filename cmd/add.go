@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"time"
-
-	"github.com/google/uuid"
 	"github.com/mhallmark/gotodo/data/todoitems"
 	"github.com/spf13/cobra"
 )
@@ -21,33 +18,18 @@ func add(cmd *cobra.Command, args []string) {
 		cmd.ErrOrStderr()
 		return
 	}
-
-	for _, v := range args {
-		id, err := uuid.NewUUID()
-
-		if err != nil {
-			cmd.PrintErr("Oops, something done goofed.")
-			cmd.ErrOrStderr()
+	
+	todoItems, errs, done := todoitems.Add(args)
+	
+	for {
+		select {
+		case i := <- done:
+			cmd.Printf("Added %v total items.\n", i)
 			return
+		case item := <- todoItems:
+			cmd.Printf("Added \"%v\".\n", item.Message)
+		case err := <- errs:
+			cmd.PrintErrln(err)
 		}
-
-		todo := todoitems.TodoItem{
-			ID:      id,
-			Message: v,
-			Created: time.Now(),
-			Done:    false,
-		}
-
-		aErr := todoitems.Add(todo)
-
-		if aErr != nil {
-			cmd.PrintErr("Oops, something done goofed.")
-			cmd.ErrOrStderr()
-			return
-		}
-
-		cmd.Printf("Added \"%v\".\n", todo.Message)
 	}
-
-	cmd.Printf("Added %v new items.\n", len(args))
 }

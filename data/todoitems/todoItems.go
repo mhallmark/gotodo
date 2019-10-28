@@ -1,10 +1,10 @@
 package todoitems
 
 import (
+	"github.com/google/uuid"
 	"encoding/json"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/prologic/bitcask"
 )
 
@@ -33,15 +33,51 @@ func Close() {
 }
 
 // Add adds a TodoItem to the local database.
-func Add(todo TodoItem) error {
-	key, err := todo.ID.MarshalText()
-	ser, err := json.Marshal(todo)
+func Add(messages []string) (<-chan TodoItem, <-chan error, <-chan int) {
+	todoItems := make(chan TodoItem)
+	errs := make(chan error)
+	done := make(chan int)
+	now := time.Now()
 
-	if err != nil {
-		return err
-	}
+	go func() {
+		adds := 0
+		for _, msg := range messages {
+			id, uErr := uuid.NewUUID()
 
-	return db.Put(key, []byte(ser))
+			if uErr != nil {
+				errs <- uErr
+				continue
+			}
+
+			todo := TodoItem{
+				ID: id,
+				Message: msg,
+				Done: false,
+				Created: now,
+			}
+
+			ser, err := json.Marshal(todo)
+
+			if err != nil {
+				errs <- err
+			}
+
+			key := todo.ID.String()
+
+			err = db.Put([]byte(key), []byte(ser))
+
+			if err != nil {
+				errs <- err
+			}
+
+			todoItems <- todo
+			adds++
+		}
+
+		done <- adds
+	}()
+
+	return todoItems, errs, done
 }
 
 // List returns a channel that streams TodoItems from the database. It also returns

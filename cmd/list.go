@@ -31,9 +31,9 @@ func list(cmd *cobra.Command, args []string) {
 			return
 		case item := <-items:
 			if allItems {
-				cmd.Printf("%v \"%v\" DONE:%v\n", item.ID.String()[0:8], item.Message, item.Done)
+				cmd.Printf("%v \"%v\" DONE:%v\n", string(item.ID[0:8]), item.Message, item.Done)
 			} else {
-				cmd.Printf("%v \"%v\" %v\n", item.ID.String()[0:8], item.Message, item.Created.Format(time.UnixDate))
+				cmd.Printf("%v \"%v\" %v\n", string(item.ID[0:8]), item.Message, item.Created.Format(time.UnixDate))
 			}
 		case err := <-errs:
 			cmd.PrintErrln(err)
