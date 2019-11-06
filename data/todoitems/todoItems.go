@@ -1,9 +1,10 @@
 package todoitems
 
 import (
-	"github.com/google/uuid"
 	"encoding/json"
 	"time"
+
+	"github.com/google/uuid"
 
 	"github.com/prologic/bitcask"
 )
@@ -50,9 +51,9 @@ func Add(messages []string) (<-chan TodoItem, <-chan error, <-chan int) {
 			}
 
 			todo := TodoItem{
-				ID: id,
+				ID:      id,
 				Message: msg,
-				Done: false,
+				Done:    false,
 				Created: now,
 			}
 

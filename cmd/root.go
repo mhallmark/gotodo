@@ -19,9 +19,9 @@ func Execute() error {
 }
 
 func init() {
-	rootCmd.InitDefaultVersionFlag()
 	rootCmd.AddCommand(addCommand)
 	rootCmd.AddCommand(listCommand)
 	rootCmd.AddCommand(removeCommand)
 	rootCmd.AddCommand(doneCommand)
+	rootCmd.AddCommand(versionCmd)
 }
